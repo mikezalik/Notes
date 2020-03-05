@@ -27,13 +27,24 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> notes = new ArrayList<>();
     public static ArrayAdapter arrayAdapter;
 
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ListView listView = findViewById(R.id.listView);
-        notes.add("Example Note");
+
+        sharedPreferences = getApplicationContext().getSharedPreferences("com.mikezalik.notes", Context.MODE_PRIVATE);
+        HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("notes", null);
+        if (set == null) {
+            notes.add("Your notes here");
+        } else {
+            notes = new ArrayList(set);
+        }
+
+        notes.add("Your notes here");
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notes);
         listView.setAdapter(arrayAdapter);
 
@@ -59,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                                 notes.remove(itemToDelete);
                                 arrayAdapter.notifyDataSetChanged();
 
-                                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.mikezalik.notes", Context.MODE_PRIVATE);
                                 HashSet<String> set = new HashSet<>(MainActivity.notes);
                                 sharedPreferences.edit().putStringSet("notes", set).apply();
                         }
