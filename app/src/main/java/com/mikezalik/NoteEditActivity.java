@@ -2,7 +2,9 @@ package com.mikezalik;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,6 +12,8 @@ import android.widget.EditText;
 
 import com.mikezalik.notes.MainActivity;
 import com.mikezalik.notes.R;
+
+import java.util.HashSet;
 
 public class NoteEditActivity extends AppCompatActivity {
 
@@ -41,6 +45,11 @@ public class NoteEditActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 MainActivity.notes.set(noteId, String.valueOf(s));
                 MainActivity.arrayAdapter.notifyDataSetChanged();
+
+                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.mikezalik.notes", Context.MODE_PRIVATE);
+                HashSet<String> set = new HashSet<>(MainActivity.notes);
+                sharedPreferences.edit().putStringSet("notes", set).apply();
+
             }
 
             @Override
